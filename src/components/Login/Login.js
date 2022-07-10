@@ -36,8 +36,8 @@ const passwordReducer = (state, action) => {
     }
     case "INPUT_PASSWORD_VALIDATE": {
       return {
-        value: action.payload,
-        isValid: action.payload.trim().length > 6,
+        value: state.value,
+        isValid: state.value.trim().length > 6,
       };
     }
     default:
