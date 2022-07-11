@@ -1,8 +1,10 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
 import Button from "../UI/Button/Button";
+
+import AuthContext from "../store/auth-context/auth-context";
 
 const emailReducer = (state, action) => {
   switch (action.type) {
@@ -58,7 +60,7 @@ const initialPasswordState = {
   isValid: null,
 };
 
-const Login = (props) => {
+const Login = () => {
   const [formIsValid, setFormIsValid] = useState(false);
   const [emailState, dispatchEmail] = useReducer(
     emailReducer,
@@ -69,13 +71,15 @@ const Login = (props) => {
     initialPasswordState
   );
 
+  const contextAuth = useContext(AuthContext);
+
   const { isValid: emailIsValid } = emailState;
   const { isValid: passwordIsValid } = passwordState;
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setFormIsValid(emailState.isValid && passwordState.isValid);
-    }, 500);
+    }, 200);
 
     return () => clearTimeout(timeoutId);
   }, [emailIsValid, passwordIsValid]);
@@ -87,7 +91,6 @@ const Login = (props) => {
 
   const passwordChangeHandler = (event) => {
     dispatchPassword({ type: "PASSWORD_INPUT", payload: event.target.value });
-
     setFormIsValid(emailState.isValid && passwordState.isValid);
   };
 
@@ -104,7 +107,7 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(emailState.value, passwordState.value);
+    contextAuth.onLogin(emailState.value, passwordState.value);
   };
 
   return (
